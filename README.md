@@ -5,3 +5,4 @@ A basic book list in a lightweight app using ES6 and Skeleton
 Skeleton CSS
 
 ## Live
+http://manuel-valles.com/project/basicBookList/
