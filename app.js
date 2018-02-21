@@ -59,17 +59,62 @@ function BookList(){
     }
 }
 
-// Event Listener - Submit
+// Local Storage Constructor
+function Store(){
+  // Get Books
+  Store.prototype.getBooks = function(){
+    let books;
+    if(localStorage.getItem('books') === null){
+      books = [];
+    } else{
+      books = JSON.parse(localStorage.getItem('books'));
+    }
+    return books;
+  }
+  // Display Books
+  Store.prototype.displayBooks = function(book){
+    const books = this.getBooks();
+    books.forEach(function(book){
+      const bookList = new BookList;
+      // Add book to the list
+      bookList.addBookToList(book);
+    });
+  }
+  // Add Book
+  Store.prototype.addBook = function(book){
+    const books = this.getBooks();
+    books.push(book);
+    localStorage.setItem('books', JSON.stringify(books));
+  }
+  // Remove Book
+  Store.prototype.removeBook = function(isbn, index){
+    const books = this.getBooks();
+    books.forEach(function(book){
+      if(book.isbn === isbn){
+        books.splice(index, 1);
+      }
+    });
+    localStorage.setItem('books', JSON.stringify(books));
+  }
+}
+
+// Instantiate Store
+const store = new Store();
+// DOM Load Event
+document.addEventListener('DOMContentLoaded', store.displayBooks());
+
+// Event Listener - Add a book
 document.getElementById('book-form').addEventListener('submit', function(e){
   // Get form values
   const title = document.getElementById('title').value;
   const author = document.getElementById('author').value;
   const isbn = document.getElementById('isbn').value;
   
-  // Instantiate book
+  // Instantiate Book
   const book = new Book(title, author, isbn);
   // Instantiate BookList
   const bookList = new BookList();
+
   // Validate
   if(title === '' || author === '' || isbn === '') {
     // Error message
@@ -79,6 +124,8 @@ document.getElementById('book-form').addEventListener('submit', function(e){
     bookList.showMessage('Book Added!', 'success');
     // Add book to list
     bookList.addBookToList(book);
+    // Add book to Local Storage
+    store.addBook(book);
     // Clear fields
     book.clearFields();
   }
@@ -86,12 +133,14 @@ document.getElementById('book-form').addEventListener('submit', function(e){
   e.preventDefault();
 });
 
-// Event Listener - Delete
+// Event Listener - Delete a book
 document.getElementById('book-list').addEventListener('click', function(e){
   // Instantiate BookList
   const bookList = new BookList();
   // Delete Book
   bookList.deleteBook(e.target);
+  // Remove book from Local Storage
+  store.removeBook(e.target.parentElement.previousElementSibling.textContent);
   // Show message
   bookList.showMessage('Booked Removed!', 'success');
 
