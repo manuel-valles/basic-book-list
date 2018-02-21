@@ -11,3 +11,7 @@
 .error {
   background-color: #eb4132;
 }
+
+.delete{
+  text-decoration: none;
+}
