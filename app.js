@@ -50,6 +50,13 @@ function BookList(){
         document.querySelector('.alert').remove();
       }, 3000);
     }
+
+    // Delete Book From List
+    BookList.prototype.deleteBook =  function(target) {
+      if(target.className === 'delete') {
+        target.parentElement.parentElement.remove();
+      }
+    }
 }
 
 // Event Listener - Submit
@@ -78,3 +85,15 @@ document.getElementById('book-form').addEventListener('submit', function(e){
 
   e.preventDefault();
 });
+
+// Event Listener - Delete
+document.getElementById('book-list').addEventListener('click', function(e){
+  // Instantiate BookList
+  const bookList = new BookList();
+  // Delete Book
+  bookList.deleteBook(e.target);
+  // Show message
+  bookList.showMessage('Booked Removed!', 'success');
+
+  e.preventDefault();
+})
